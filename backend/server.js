@@ -6,7 +6,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 // importing Mongodb Connection 
-const connectDB = require('./config/db')
+const connectDB = require('./config/db');
+
+// Importing Authentication Routes
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -15,6 +18,14 @@ app.use(express.json());
 
 // Connect MongoDB
 connectDB();
+
+// Routes
+app.use('api/auth', authRoutes);
+
+// Api health check
+app.get('/api/health', (req, res) => {
+    res.json({ message: 'Server is running!' })
+})
 
 const PORT = process.env.PORT || 5000
 
