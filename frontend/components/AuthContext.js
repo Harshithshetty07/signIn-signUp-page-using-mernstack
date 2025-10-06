@@ -110,8 +110,94 @@ export const AuthProvider = ({ children }) => {
             dispatch({ type: 'LOGOUT' })
         }
     }
-}
 
+    // sign up 
+
+    const signup = async (userData) => {
+        try {
+            dispatch({ type: 'SET_LOADING', payload: true });
+            dispatch({ type: 'CLEAR_ERROR' });
+
+            const response = await axios.post(`${API_URL}/auth/signup`, userData);
+
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: {
+                    user: response.data.user,
+                    token: response.data.token
+                }
+            });
+            return { success: true, message: response.data.message };
+        }
+        catch (error) {
+            const errorMessage = error.response?.data?.message || 'Signup failed'
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
+            return { success: false, message: errorMessage }
+        }
+    }
+
+    // Sign In 
+    const singin = async (crendentials) => {
+        try {
+            dispatch({
+                type: 'SET_LOADING',
+                payload: true
+            });
+            dispatch({
+                type: 'CLEAR_ERROR'
+            });
+            const response = await axios.post(`${API_URL}/auth/signin`, crendentials);
+
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: {
+                    user: response.data.user,
+                    token: response.data.token
+                }
+            });
+            return { success: true, message: response.data.message };
+        }
+        catch (error) {
+            const errorMessage = error.response?.data?.message || 'Signin failed';
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
+            return { success: false, message: errorMessage }
+        }
+    }
+
+    // Logout 
+    const logout = () => {
+        dispatch({ type: 'LOGOUT' });
+
+    }
+
+    // Clear Error
+    const clearError = () => {
+        dispatch({ type: 'CLEAR_ERROR' });
+    }
+
+    const value = {
+        ...state,
+        signup,
+        singin,
+        logout,
+        clearError
+    }
+
+    return (
+        <AuthContext.Provider value={value} >
+            {children}
+        </AuthContext.Provider>
+    )
+
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+}
 
 
 //
