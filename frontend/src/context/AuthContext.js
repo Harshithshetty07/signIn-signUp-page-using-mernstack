@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, Children } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, } from 'react';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api';
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         loadUser();
-    });
+    }, []);
 
     // Load user
 
