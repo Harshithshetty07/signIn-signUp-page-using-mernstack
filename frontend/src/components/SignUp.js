@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup, clearError } from '../utils/authSlice';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -11,11 +12,11 @@ const SignUp = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
-    const { signup, isAuthenticated, error, clearError, loading } = useAuth();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
 
     // Redirect if already authenticated
     useEffect(() => {
@@ -24,11 +25,11 @@ const SignUp = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    // Clear errors when component mounts or form data changes
+    // Clear errors when form data changes
     useEffect(() => {
-        clearError();
+        dispatch(clearError());
         setValidationErrors({});
-    }, [formData, clearError]);
+    }, [formData, dispatch]);
 
     const validateForm = () => {
         const errors = {};
@@ -77,19 +78,15 @@ const SignUp = () => {
             return;
         }
 
-        setIsSubmitting(true);
-
-        const result = await signup({
+        const result = await dispatch(signup({
             name: formData.name.trim(),
             email: formData.email.trim(),
             password: formData.password,
-        });
+        }));
 
-        if (result.success) {
+        if (result.type === 'auth/signup/fulfilled') {
             navigate('/dashboard');
         }
-
-        setIsSubmitting(false);
     };
 
     const togglePasswordVisibility = () => {
@@ -116,14 +113,6 @@ const SignUp = () => {
     };
 
     const passwordStrength = getPasswordStrength(formData.password);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -318,10 +307,10 @@ const SignUp = () => {
                         <div>
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={loading}
                                 className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                {isSubmitting ? (
+                                {loading ? (
                                     <>
                                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

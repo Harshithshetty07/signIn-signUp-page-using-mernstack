@@ -1,13 +1,15 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../utils/authSlice';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await dispatch(logout());
     navigate('/signin');
   };
 
@@ -19,7 +21,7 @@ const Dashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
@@ -32,8 +34,8 @@ const Dashboard = () => {
 
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <div className="h-8 w-8 bg-primary-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-700">
+                <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-blue-700">
                     {user?.name?.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -44,7 +46,7 @@ const Dashboard = () => {
 
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
                 <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -204,7 +206,7 @@ const Dashboard = () => {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-500">
                   This is a protected route that can only be accessed by authenticated users.
-                  Your authentication token is stored securely and will expire automatically.
+                  Your authentication token is stored securely and managed by Redux Toolkit.
                 </p>
               </div>
             </div>

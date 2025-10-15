@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { signin, clearError } from '../utils/authSlice';
 
 const SignIn = () => {
     const [formData, setFormData] = useState({
@@ -8,9 +9,9 @@ const SignIn = () => {
         password: '',
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { signin, isAuthenticated, error, clearError, loading } = useAuth();
+    const dispatch = useDispatch();
+    const { isAuthenticated, error, loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
     // Redirect if already authenticated
@@ -20,10 +21,10 @@ const SignIn = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    // Clear errors when component mounts or form data changes
+    // Clear errors when component mounts
     useEffect(() => {
-        clearError();
-    }, [formData, clearError]);
+        dispatch(clearError());
+    }, [dispatch]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,15 +36,7 @@ const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true);
-
-        const result = await signin(formData);
-
-        if (result.success) {
-            navigate('/dashboard');
-        }
-
-        setIsSubmitting(false);
+        dispatch(signin(formData));
     };
 
     const togglePasswordVisibility = () => {
@@ -158,10 +151,10 @@ const SignIn = () => {
                         <div>
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={loading}
                                 className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                {isSubmitting ? (
+                                {loading ? (
                                     <>
                                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

@@ -20,7 +20,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use('api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Api health check
 app.get('/api/health', (req, res) => {

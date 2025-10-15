@@ -6,11 +6,14 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Dashboard from './components/Dashboard';
 import './index.css';
+import { Provider } from 'react-redux';
+import appStore from './utils/appStore'
+
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      <Provider store={appStore}>
         <div className="App">
           <Routes>
             {/* Public Routes */}
@@ -34,7 +37,7 @@ function App() {
             <Route path="*" element={<Navigate to="/signin" replace />} />
           </Routes>
         </div>
-      </AuthProvider>
+      </Provider>
     </Router>
   );
 }
