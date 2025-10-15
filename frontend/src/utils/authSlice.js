@@ -22,7 +22,7 @@ if (token) {
 
 // Load User
 export const loadUser = createAsyncThunk(
-    'auth/loadUser',
+    '/auth/loadUser',
     async (_, { rejectWithValue }) => {
         const token = localStorage.getItem('token');
 
@@ -44,7 +44,7 @@ export const loadUser = createAsyncThunk(
 
 // Sign Up
 export const signup = createAsyncThunk(
-    'auth/signup',
+    '/auth/signup',
     async (userData, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${API_URL}/auth/signup`, userData);
@@ -67,7 +67,7 @@ export const signup = createAsyncThunk(
 
 // Sign In
 export const signin = createAsyncThunk(
-    'auth/signin',
+    '/auth/signin',
     async (credentials, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${API_URL}/auth/signin`, credentials);
@@ -90,7 +90,7 @@ export const signin = createAsyncThunk(
 
 // Logout
 export const logout = createAsyncThunk(
-    'auth/logout',
+    '/auth/logout',
     async () => {
         try {
             // Optional: call backend logout endpoint

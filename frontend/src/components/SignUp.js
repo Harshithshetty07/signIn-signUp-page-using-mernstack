@@ -84,7 +84,7 @@ const SignUp = () => {
             password: formData.password,
         }));
 
-        if (result.type === 'auth/signup/fulfilled') {
+        if (result.type === '/auth/signup/fulfilled') {
             navigate('/dashboard');
         }
     };
