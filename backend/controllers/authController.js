@@ -7,6 +7,8 @@ exports.signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        console.log('📝 Signup attempt:', { name, email });
+
         // Validation
         if (!name || !email || !password) {
             return res.status(400).json({
@@ -39,10 +41,12 @@ exports.signup = async (req, res) => {
         });
         await user.save();
 
+        console.log('✅ User created:', user.email);
+
         // Generate JWT token
         const token = jwt.sign(
             { id: user._id },
-            process.env.JWT_SECRET || 'fallback_secret',
+            process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 
@@ -56,7 +60,7 @@ exports.signup = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error('Signup error:', error);
+        console.error('❌ Signup error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -65,6 +69,8 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        console.log('🔐 Signin attempt:', { email });
 
         // Validation
         if (!email || !password) {
@@ -89,10 +95,12 @@ exports.signin = async (req, res) => {
             });
         }
 
+        console.log('✅ User signed in:', user.email);
+
         // Generate JWT token
         const token = jwt.sign(
             { id: user._id },
-            process.env.JWT_SECRET || 'fallback_secret',
+            process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 
@@ -106,7 +114,7 @@ exports.signin = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error('Signin error:', error);
+        console.error('❌ Signin error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -122,13 +130,12 @@ exports.getProfile = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error('Get profile error:', error);
+        console.error('❌ Get profile error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 // Logout Controller
 exports.logout = (req, res) => {
-    // Since we're using JWT, logout is handled client-side by removing the token
     res.json({ message: 'Logged out successfully' });
 };

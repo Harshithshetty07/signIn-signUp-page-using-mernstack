@@ -1,9 +1,10 @@
-import React, { Children } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+    const dispatch = useDispatch();
+    const { isAuthenticated, error, loading } = useSelector((state) => state.auth);
     const location = useLocation();
 
     if (loading) {
@@ -14,7 +15,7 @@ const ProtectedRoute = ({ children }) => {
                     <p className='mt-4 text-sm text-gray-600'>Loading...</p>
                 </div>
             </div>
-        )
+        );
     }
 
     if (!isAuthenticated) {
@@ -22,6 +23,6 @@ const ProtectedRoute = ({ children }) => {
     }
 
     return children;
-}
+};
 
 export default ProtectedRoute;
