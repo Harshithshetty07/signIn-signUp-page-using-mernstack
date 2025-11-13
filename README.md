@@ -17,3 +17,9 @@
 
 6. View logs
    -------- commond: docker logs -f my-express
+
+7. Removing the Image ID: 
+----------  commond: docker rmi IMAGE_ID
+
+
+Note: if we want run this code to another pc or laptop we must delete container, image, image_id. Then we should re-build the container, image, image_id
