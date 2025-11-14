@@ -1,0 +1,19 @@
+# Use official Node for dev
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies first (copy package files only for caching)
+COPY package*.json ./
+# If you use pnpm/yarn adjust accordingly
+RUN npm install
+
+# Copy the rest of the source
+COPY . .
+
+# Expose CRA default port
+EXPOSE 3002
+
+# Start the dev server
+CMD ["npm", "start"]
